@@ -23,7 +23,14 @@
         console.log(array)
         array.map((post) => {
           const listElement = document.createElement('li');
-          listElement.innerText = `${post.id} - ${post.title}\n${post.body}\n\n`
+          const title = document.createElement('h2');
+          const content = document.createElement('p');
+
+          title.textContent = `${post.id} - ${post.title}`
+          content.textContent = `${post.body}`
+
+          listElement.appendChild(title);
+          listElement.appendChild(content);
           list.appendChild(listElement);
         })
       })
@@ -38,8 +45,16 @@
     fetch('https://jsonplaceholder.typicode.com/posts/67')
       .then(response => response.json())
       .then(post => {
-        console.log(post)
-        answer.innerText = `${post.id} - ${post.title}\n${post.body}\n\n`
+        console.log(post);
+        const title = document.createElement('h2');
+        const content = document.createElement('p');
+        
+        title.textContent = `${post.id} - ${post.title}`
+        content.textContent = `${post.body}`
+
+        answer.textContent= '';
+        answer.appendChild(title);
+        answer.appendChild(content);
       })
   })
 
@@ -49,6 +64,8 @@
     const bodyInput = document.createElement('input');
     const submitButton = document.createElement('button');
     const response = document.createElement('div');
+
+    response.classList.add('nowy-post')
 
     form.appendChild(titleInput);
     form.appendChild(bodyInput);
@@ -81,7 +98,7 @@
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        response.textContent = `Dodano nowy post o ID = ${json.id}`
+        response.textContent = `Dodano nowy post o ID = ${json.id}`;
       });
     })
   })
