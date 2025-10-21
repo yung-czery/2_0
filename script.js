@@ -44,7 +44,45 @@
   })
 
   cw3.addEventListener("click", function () {
-    //TODO
-  })
+    const form = document.createElement('form');
+    const titleInput = document.createElement('input');
+    const bodyInput = document.createElement('input');
+    const submitButton = document.createElement('button');
+    const response = document.createElement('div');
 
+    form.appendChild(titleInput);
+    form.appendChild(bodyInput);
+    form.appendChild(submitButton);
+
+    titleInput.placeholder = 'Podaj tytuł';
+    bodyInput.placeholder = 'Podaj treść';
+
+    submitButton.type = 'submit';
+    submitButton.innerText = 'Wyślij';
+
+    answer.appendChild(form);
+    answer.appendChild(response);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      response.textContent = 'Processing...'
+      fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: titleInput.value,
+          body: bodyInput.value,
+          userId: Math.floor(Math.random() * 10),
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        response.textContent = `Dodano nowy post o ID = ${json.id}`
+      });
+    })
+  })
 })();
