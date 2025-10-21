@@ -20,7 +20,7 @@
     fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
       .then(array => {
-        console.log(array)
+        console.log('Wszystkie posty: ', array)
         array.map((post) => {
           const listElement = document.createElement('li');
           const title = document.createElement('h2');
@@ -45,7 +45,7 @@
     fetch('https://jsonplaceholder.typicode.com/posts/67')
       .then(response => response.json())
       .then(post => {
-        console.log(post);
+        console.log('Pojedyńczy post: ', post);
         const title = document.createElement('h2');
         const content = document.createElement('p');
         
@@ -59,6 +59,7 @@
   })
 
   cw3.addEventListener("click", function () {
+    answer.innerHTML = '';
     const form = document.createElement('form');
     const titleInput = document.createElement('input');
     const bodyInput = document.createElement('input');
@@ -97,7 +98,7 @@
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
+        console.log('Odpowiedź POST: ', json);
         response.textContent = `Dodano nowy post o ID = ${json.id}`;
       });
     })
