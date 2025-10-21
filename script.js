@@ -31,11 +31,16 @@
         answer.textContent = ''
         answer.appendChild(list);
       })
-    
   })
 
   cw2.addEventListener("click", function () {
-    //TODO
+    answer.textContent = 'Loading...';
+    fetch('https://jsonplaceholder.typicode.com/posts/67')
+      .then(response => response.json())
+      .then(post => {
+        console.log(post)
+        answer.innerText = `${post.id} - ${post.title}\n${post.body}\n\n`
+      })
   })
 
   cw3.addEventListener("click", function () {
