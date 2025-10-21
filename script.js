@@ -5,6 +5,30 @@
   const cw3 = document.getElementById('cw3')
   const answer = document.getElementById('answer')
 
+  function createLoadingModal() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.4);
+    color: white;
+    font-size: 1.2rem;
+    font-family: sans-serif;
+    z-index: 9999;
+    display: none;
+  `;
+    overlay.textContent = 'Loading...';
+    document.body.appendChild(overlay);
+
+    return {
+      show: () => overlay.style.display = 'flex',
+      hide: () => overlay.style.display = 'none'
+    };
+  }
+
   example.addEventListener("click", function () {
     fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
@@ -15,8 +39,10 @@
   })
 
   cw1.addEventListener("click", function () {
+    answer.innerHTML = '';
     const list = document.createElement('ul');
-    answer.textContent = 'Loading...';
+    const popup = createLoadingModal();
+    popup.show();
     fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
       .then(array => {
@@ -35,13 +61,15 @@
         })
       })
       .finally(() => {
-        answer.textContent = ''
+        popup.hide();
         answer.appendChild(list);
       })
   })
 
   cw2.addEventListener("click", function () {
-    answer.textContent = 'Loading...';
+    answer.innerHTML = '';
+    const popup = createLoadingModal();
+    popup.show();
     fetch('https://jsonplaceholder.typicode.com/posts/67')
       .then(response => response.json())
       .then(post => {
@@ -52,7 +80,7 @@
         title.textContent = `${post.id} - ${post.title}`
         content.textContent = `${post.body}`
 
-        answer.textContent= '';
+        popup.hide();
         answer.appendChild(title);
         answer.appendChild(content);
       })
