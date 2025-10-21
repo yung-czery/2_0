@@ -16,6 +16,7 @@
 
   cw1.addEventListener("click", function () {
     const list = document.createElement('ul');
+    answer.textContent = 'Loading...';
     fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
       .then(array => {
@@ -26,7 +27,11 @@
           list.appendChild(listElement);
         })
       })
-    answer.appendChild(list);
+      .finally(() => {
+        answer.textContent = ''
+        answer.appendChild(list);
+      })
+    
   })
 
   cw2.addEventListener("click", function () {
