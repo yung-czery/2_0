@@ -1,9 +1,14 @@
 (function () {
-  const example = document.getElementById('example')
-  const cw1 = document.getElementById('cw1')
-  const cw2 = document.getElementById('cw2')
-  const cw3 = document.getElementById('cw3')
-  const answer = document.getElementById('answer')
+  const example = document.getElementById('example');
+  const cw1 = document.getElementById('cw1');
+  const cw2 = document.getElementById('cw2');
+  const cw3 = document.getElementById('cw3');
+  const answer = document.getElementById('answer');
+
+  function getLoadingDelayState() {
+    const delayCheckbox = document.getElementById('delay');
+    return delayCheckbox.checked;
+  }
 
   function createLoadingModal() {
     const overlay = document.createElement('div');
@@ -25,68 +30,88 @@
 
     return {
       show: () => overlay.style.display = 'flex',
-      hide: () => overlay.style.display = 'none'
+      hide: () => overlay.style.display = 'none',
     };
   }
 
-  example.addEventListener("click", function () {
+  example.addEventListener('click', function () {
     fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(response => response.json())
-      .then(array => {
-        console.log(array)
-        answer.innerHTML = JSON.stringify(array);
-      })
-  })
+    .then(response => response.json())
+    .then(array => {
+      console.log(array);
+      answer.innerHTML = JSON.stringify(array);
+    });
+  });
 
-  cw1.addEventListener("click", function () {
+  cw1.addEventListener('click', function () {
     answer.innerHTML = '';
     const list = document.createElement('ul');
     const popup = createLoadingModal();
+    const delay = getLoadingDelayState();
+
     popup.show();
-    fetch('https://jsonplaceholder.typicode.com/posts')
+    if (delay) {
+      setTimeout(fetchData, 500);
+    } else {
+      fetchData();
+    }
+
+    function fetchData() {
+      fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
       .then(array => {
-        console.log('Wszystkie posty: ', array)
+        console.log('Wszystkie posty: ', array);
         array.map((post) => {
           const listElement = document.createElement('li');
           const title = document.createElement('h2');
           const content = document.createElement('p');
 
-          title.textContent = `${post.id} - ${post.title}`
-          content.textContent = `${post.body}`
+          title.textContent = `${post.id} - ${post.title}`;
+          content.textContent = `${post.body}`;
 
           listElement.appendChild(title);
           listElement.appendChild(content);
           list.appendChild(listElement);
-        })
+        });
       })
       .finally(() => {
         popup.hide();
         answer.appendChild(list);
-      })
-  })
+      });
+    }
+  });
 
-  cw2.addEventListener("click", function () {
+  cw2.addEventListener('click', function () {
     answer.innerHTML = '';
     const popup = createLoadingModal();
+    const delay = getLoadingDelayState();
+
     popup.show();
-    fetch('https://jsonplaceholder.typicode.com/posts/67')
+    if (delay) {
+      setTimeout(fetchData, 500);
+    } else {
+      fetchData();
+    }
+
+    function fetchData() {
+      fetch('https://jsonplaceholder.typicode.com/posts/67')
       .then(response => response.json())
       .then(post => {
         console.log('Pojedyńczy post: ', post);
         const title = document.createElement('h2');
         const content = document.createElement('p');
-        
-        title.textContent = `${post.id} - ${post.title}`
-        content.textContent = `${post.body}`
+
+        title.textContent = `${post.id} - ${post.title}`;
+        content.textContent = `${post.body}`;
 
         popup.hide();
         answer.appendChild(title);
         answer.appendChild(content);
-      })
-  })
+      });
+    }
+  });
 
-  cw3.addEventListener("click", function () {
+  cw3.addEventListener('click', function () {
     answer.innerHTML = '';
     const form = document.createElement('form');
     const titleInput = document.createElement('input');
@@ -94,7 +119,7 @@
     const submitButton = document.createElement('button');
     const response = document.createElement('div');
 
-    response.classList.add('nowy-post')
+    response.classList.add('nowy-post');
 
     form.appendChild(titleInput);
     form.appendChild(bodyInput);
@@ -112,7 +137,7 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      response.textContent = 'Processing...'
+      response.textContent = 'Processing...';
       fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST',
         body: JSON.stringify({
@@ -129,6 +154,6 @@
         console.log('Odpowiedź POST: ', json);
         response.textContent = `Dodano nowy post o ID = ${json.id}`;
       });
-    })
-  })
+    });
+  });
 })();
