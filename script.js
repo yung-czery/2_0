@@ -3,6 +3,7 @@
   const cw1 = document.getElementById('cw1');
   const cw2 = document.getElementById('cw2');
   const cw3 = document.getElementById('cw3');
+  const cw4 = document.getElementById('cw4');
   const answer = document.getElementById('answer');
 
   function getLoadingDelayState() {
@@ -155,5 +156,55 @@
         response.textContent = `Dodano nowy post o ID = ${json.id}`;
       });
     });
+  });
+
+  cw4.addEventListener('click', function () {
+    answer.innerHTML = '';
+    const popup = createLoadingModal();
+    const delay = getLoadingDelayState();
+
+    popup.show();
+    if (delay) {
+      setTimeout(fetchData, 500);
+    } else {
+      fetchData();
+    }
+
+    function fetchData() {
+      const posts = fetch('https://my-json-server.typicode.com/yung-czery/json-server/posts');
+      const comments = fetch('https://my-json-server.typicode.com/yung-czery/json-server/comments');
+
+      Promise.all([posts, comments])
+      .then(responses => Promise.all(responses.map(res => res.json())))
+      .then(([posts, comments]) => {
+        console.log('Posts: ', posts);
+        console.log('Comments: ', comments);
+
+        const postsList = document.createElement('ul');
+
+        posts.forEach(post => {
+          const postItem = document.createElement('li');
+          const postTitle = document.createElement('h2');
+          postTitle.textContent = `${post.id} - ${post.title}`;
+          postItem.appendChild(postTitle);
+
+          const postComments = comments.filter(comment => comment.postId === post.id);
+          const commentsList = document.createElement('ul');
+
+          postComments.forEach(comment => {
+            const commentItem = document.createElement('li');
+            commentItem.classList.add('comment');
+            commentItem.textContent = `${comment.body}`;
+            commentsList.appendChild(commentItem);
+          });
+
+          postItem.appendChild(commentsList);
+          postsList.appendChild(postItem);
+        });
+
+        popup.hide();
+        answer.appendChild(postsList);
+      });
+    }
   });
 })();
